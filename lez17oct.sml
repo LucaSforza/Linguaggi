@@ -1,26 +1,27 @@
-val succ = (fn w => (
-    fn x => fn y => w x (x y)
-));
+(*Lezione sui numeri di church*)
 
-val succ = (fn w => (
-    fn x => fn y => x ( w x y)
-));
+val eval = (fn x => x (fn n => n + 1) 0);
+val zero = (fn f => fn x => x);
+val tre = (fn f => fn x => f (f (f x)));
+val quart = (fn f => fn x => f (f (f (f x))));
 
-val eval = (fn x => x (fn y => y + 1) 0);
-val zero = (fn x => fn y => y);
-val tre = (fn x => fn y => x (x (x y)));
-val quart = (fn x => fn y => x ( x (x (x y))));
+val succ = (fn z =>
+    (fn f => fn x => f ((z f) x)));
 
 eval tre;
 eval (succ tre);
 eval (succ (succ tre));
 eval (succ (succ zero));
 
-val plus = (fn u => fn v => (fn x => fn y => u x ( v x y)));
+val plus = (fn u => fn v => (
+    fn f => fn x => u f ( v f x)) (*soluzione del prof*)
+);
+val somma = (fn z => fn w => (fn f => fn x => w f (z f x))
+    (*(fn f => fn x => w (z f) x)*));
+eval (per tre quart);
 
-eval (plus tre quart);
-
-val times = (fn u => fn v => v (fn z => plus z u) zero); (* modo brutto di farlo*)
+val times = (fn u => fn v =>
+    v (fn z => rty z u) zero); (* modo brutto di farlo*)
 
 (* adesso creiamo times senza plus*)
 val times = (fn u => fn v => (
